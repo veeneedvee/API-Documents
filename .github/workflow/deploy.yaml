@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Deploy ReDoc to GitHub Pages
 
 on:
   push:
@@ -9,29 +9,22 @@ permissions:
   contents: write
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
 
       - name: Install ReDoc CLI
         run: npm install -g @redocly/cli
 
-      - name: Generate redoc-static.html
-        run: npx @redocly/cli build-docs OpenAPI3.0ReqRes.yaml -o redoc-static.html
-
-      - name: Add .nojekyll
-        run: touch .nojekyll
+      - name: Generate ReDoc HTML
+        run: |
+          mkdir public
+          npx @redocly/cli build-docs OpenAPI3.0ReqRes.yaml -o public/index.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./
+          publish_dir: ./public
