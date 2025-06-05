@@ -1,0 +1,30 @@
+name: Deploy ReDoc to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install ReDoc CLI
+        run: npm install -g @redocly/cli
+
+      - name: Generate ReDoc HTML
+        run: |
+          mkdir public
+          npx @redocly/cli build-docs OpenAPI3.0ReqRes.yaml -o public/index.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
