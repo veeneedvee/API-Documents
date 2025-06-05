@@ -1,4 +1,4 @@
-name: Deploy ReDoc to GitHub Pages
+name: Deploy ReDoc to GitHub Page
 
 on:
   push:
